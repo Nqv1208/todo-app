@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="TodoApp.Domain/TodoApp.Domain.csproj" />
+  <Project Path="TodoApp.Application/TodoApp.Application.csproj" />
+  <Project Path="TodoApp.Infrastructure/TodoApp.Infrastructure.csproj" />
+  <Project Path="TodoApp.Web/TodoApp.Web.csproj" />
+  <Project Path="TodoApp.Tests/TodoApp.Tests.csproj" />
+</Solution>
