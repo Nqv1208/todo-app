@@ -1,8 +1,6 @@
 namespace TodoApp.Domain.Collaboration.Enums;
 
-/// <summary>
-/// Loại resource được phân quyền
-/// </summary>
+// Loại resource được phân quyền
 public enum ResourceType
 {
     Workspace = 0,

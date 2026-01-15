@@ -1,8 +1,6 @@
 namespace TodoApp.Domain.Activity.Enums;
 
-/// <summary>
-/// Loại hành động được ghi log
-/// </summary>
+// Loại hành động được ghi log
 public enum ActivityAction
 {
     // CRUD actions

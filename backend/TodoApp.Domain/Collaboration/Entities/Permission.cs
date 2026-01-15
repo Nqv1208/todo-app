@@ -1,11 +1,6 @@
-using TodoApp.Domain.Common;
-using TodoApp.Domain.Collaboration.Enums;
-
 namespace TodoApp.Domain.Collaboration.Entities;
 
-/// <summary>
-/// Entity đại diện cho quyền truy cập vào resource
-/// </summary>
+// Entity đại diện cho quyền truy cập vào resource
 public class Permission : AuditableEntity
 {
     public ResourceType ResourceType { get; private set; }

@@ -1,10 +1,6 @@
-using TodoApp.Domain.Content.Enums;
-
 namespace TodoApp.Domain.Common.Events;
 
-/// <summary>
-/// Domain Event khi ContentItem được tạo
-/// </summary>
+// Domain Event khi ContentItem được tạo
 public class ContentItemCreatedEvent : BaseEvent
 {
     public Guid ContentItemId { get; }

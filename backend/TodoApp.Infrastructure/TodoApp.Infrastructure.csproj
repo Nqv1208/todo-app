@@ -7,7 +7,7 @@
     <RootNamespace>TodoApp.Infrastructure</RootNamespace>
   </PropertyGroup>
 
-  <!-- 🗄️ DATABASE - Entity Framework Core -->
+  <!-- DATABASE - Entity Framework Core -->
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
@@ -21,35 +21,37 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
-  <!-- 🔐 IDENTITY & SECURITY -->
+  <!-- IDENTITY & SECURITY -->
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
   </ItemGroup>
 
-  <!-- 📦 CACHE -->
+  <!-- CACHE -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.2" />
   </ItemGroup>
 
-  <!-- 📜 LOGGING -->
+  <!-- LOGGING -->
   <ItemGroup>
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
 
-  <!-- 📡 EVENT / MESSAGE -->
+  <!-- EVENT / MESSAGE -->
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="9.0.0" />
   </ItemGroup>
 
-  <!-- 📂 FILE STORAGE -->
+  <!-- FILE STORAGE -->
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="4.0.17.1" />
   </ItemGroup>
 
-  <!-- 🔗 Project References -->
+  <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\TodoApp.Application\TodoApp.Application.csproj" />
   </ItemGroup>

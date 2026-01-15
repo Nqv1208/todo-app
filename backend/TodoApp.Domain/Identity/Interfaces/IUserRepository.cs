@@ -1,4 +1,3 @@
-using TodoApp.Domain.Common.Interfaces;
 using TodoApp.Domain.Identity.Entities;
 
 namespace TodoApp.Domain.Identity.Interfaces;

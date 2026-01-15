@@ -7,6 +7,6 @@
     <RootNamespace>TodoApp.Domain</RootNamespace>
   </PropertyGroup>
 
-  <!-- ❌ KHÔNG CÓ PACKAGES - Domain layer phải PURE theo Clean Architecture -->
+  <!-- NO PACKAGES - Domain layer must be PURE according to Clean Architecture rules -->
 
 </Project>

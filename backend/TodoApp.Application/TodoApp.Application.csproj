@@ -7,7 +7,7 @@
     <RootNamespace>TodoApp.Application</RootNamespace>
   </PropertyGroup>
 
-  <!-- 📦 CQRS + Validation + Mapping -->
+  <!-- CQRS + Validation + Mapping -->
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.0.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
@@ -15,7 +15,7 @@
     <PackageReference Include="AutoMapper" Version="16.0.0" />
   </ItemGroup>
 
-  <!-- 🔗 Project References -->
+  <!-- PROJECT REFERENCES -->
   <ItemGroup>
     <ProjectReference Include="..\TodoApp.Domain\TodoApp.Domain.csproj" />
   </ItemGroup>

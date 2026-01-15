@@ -1,11 +1,6 @@
-using TodoApp.Domain.Common;
-using TodoApp.Domain.Collaboration.Enums;
-
 namespace TodoApp.Domain.Collaboration.Entities;
 
-/// <summary>
-/// Entity đại diện cho comment trên resource
-/// </summary>
+// Entity đại diện cho comment trên resource
 public class Comment : AuditableEntity
 {
     public Guid Id { get; private set; } // Add this line for Id property

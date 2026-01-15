@@ -1,8 +1,6 @@
 namespace TodoApp.Domain.Collaboration.Enums;
 
-/// <summary>
-/// Loại subject được cấp quyền
-/// </summary>
+// Loại subject được cấp quyền
 public enum SubjectType
 {
     User = 0,

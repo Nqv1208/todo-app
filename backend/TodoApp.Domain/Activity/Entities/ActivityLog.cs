@@ -1,11 +1,6 @@
-using TodoApp.Domain.Common;
-using TodoApp.Domain.Activity.Enums;
-
 namespace TodoApp.Domain.Activity.Entities;
 
-/// <summary>
-/// Entity ghi lại tất cả hoạt động trong hệ thống (Audit Log)
-/// </summary>
+// Entity ghi lại tất cả hoạt động trong hệ thống (Audit Log)
 public class ActivityLog : BaseEntity
 {
     public Guid ActorId { get; private set; }

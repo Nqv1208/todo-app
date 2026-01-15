@@ -1,8 +1,6 @@
 namespace TodoApp.Domain.Collaboration.Enums;
 
-/// <summary>
-/// Mức độ quyền truy cập
-/// </summary>
+// Mức độ quyền truy cập
 public enum PermissionLevel
 {
     None = 0,
