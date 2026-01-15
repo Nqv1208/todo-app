@@ -1,8 +1,6 @@
 namespace TodoApp.Domain.Common;
 
-/// <summary>
-/// Base class cho Value Object - immutable và được so sánh bằng giá trị
-/// </summary>
+// Base class cho Value Object - immutable và được so sánh bằng giá trị
 public abstract class ValueObject
 {
     protected abstract IEnumerable<object> GetEqualityComponents();

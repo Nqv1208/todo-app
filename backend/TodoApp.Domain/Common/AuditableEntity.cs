@@ -1,9 +1,7 @@
 namespace TodoApp.Domain.Common;
 
-/// <summary>
-/// Base entity với audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy)
-/// </summary>
-public abstract class AuditableEntity : Entity
+// Base entity với audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy)
+public abstract class AuditableEntity : BaseEntity
 {
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedBy { get; set; }
