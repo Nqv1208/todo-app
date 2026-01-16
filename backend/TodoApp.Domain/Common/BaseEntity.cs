@@ -5,9 +5,9 @@ public abstract class BaseEntity
 {
     public Guid Id { get; protected set; }
 
-    private readonly List<IDomainEvent> _domainEvents = new();
+    private readonly List<BaseEvent> _domainEvents = new();
     
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected BaseEntity()
     {
@@ -19,12 +19,12 @@ public abstract class BaseEntity
         Id = id;
     }
 
-    public void AddDomainEvent(IDomainEvent domainEvent)
+    public void AddDomainEvent(BaseEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }
 
-    public void RemoveDomainEvent(IDomainEvent domainEvent)
+    public void RemoveDomainEvent(BaseEvent domainEvent)
     {
         _domainEvents.Remove(domainEvent);
     }
@@ -69,4 +69,3 @@ public abstract class BaseEntity
         return !(left == right);
     }
 }
-

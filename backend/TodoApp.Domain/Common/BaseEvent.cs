@@ -1,6 +1,6 @@
 namespace TodoApp.Domain.Common;
 
-// Interface cho Domain Event - dùng để publish events khi có thay đổi trong domain
+// Interface cho Domain Event
 public interface IDomainEvent
 {
     Guid EventId { get; }
@@ -19,4 +19,3 @@ public abstract class BaseEvent : IDomainEvent
         OccurredOn = DateTime.UtcNow;
     }
 }
-
