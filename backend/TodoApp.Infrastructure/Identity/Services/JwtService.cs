@@ -4,7 +4,9 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TodoApp.Domain.Identity.Entities;
+using TodoApp.Application.Common.Interfaces;
+using TodoApp.Domain.Entities;
+using TodoApp.Infrastructure.Identity.Options;
 
 namespace TodoApp.Infrastructure.Identity.Services;
 

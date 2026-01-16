@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TodoApp.Domain.Content.Entities;
-using TodoApp.Domain.Content.ValueObjects;
-using System.Text.Json;
+using TodoApp.Domain.Entities;
 
 namespace TodoApp.Infrastructure.Data.Configurations;
 

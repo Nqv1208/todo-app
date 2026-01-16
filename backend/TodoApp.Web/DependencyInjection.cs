@@ -1,13 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-
-namespace TodoApp.Web;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebServices(this IServiceCollection services)
+    public static void AddWebServices(this IHostApplicationBuilder builder)
     {
+        var services = builder.Services;
         // Add web-specific services here
-        
-        return services;
     }
 }

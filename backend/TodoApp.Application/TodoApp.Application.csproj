@@ -15,6 +15,12 @@
     <PackageReference Include="AutoMapper" Version="16.0.0" />
   </ItemGroup>
 
+  <!-- EF Core Abstractions (for DbSet in IApplicationDbContext) -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+  </ItemGroup>
+
   <!-- PROJECT REFERENCES -->
   <ItemGroup>
     <ProjectReference Include="..\TodoApp.Domain\TodoApp.Domain.csproj" />

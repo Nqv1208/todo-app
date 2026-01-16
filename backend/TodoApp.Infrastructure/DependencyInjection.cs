@@ -1,26 +1,24 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using TodoApp.Domain.Common.Interfaces;
-using TodoApp.Domain.Identity.Interfaces;
-using TodoApp.Domain.Workspace.Interfaces;
-using TodoApp.Domain.Content.Interfaces;
-using TodoApp.Domain.Activity.Interfaces;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using TodoApp.Application.Common.Interfaces;
 using TodoApp.Infrastructure.Data;
-using TodoApp.Infrastructure.Data.Repositories;
+using TodoApp.Infrastructure.Identity.Options;
 using TodoApp.Infrastructure.Identity.Services;
 
-namespace TodoApp.Infrastructure;
+namespace Microsoft.Extensions.DependencyInjection;
 
 // Infrastructure Layer Dependency Injection
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureServices(
-        this IServiceCollection services, 
-        IConfiguration configuration)
+    public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
+        var services = builder.Services;
         // Database - PostgreSQL
-        var connectionString = configuration.GetConnectionString("TodoAppDb");
+        var connectionString = builder.Configuration.GetConnectionString("TodoAppDb");
         
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -34,30 +32,52 @@ public static class DependencyInjection
             });
         });
 
-        // Unit of Work
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        // Repositories
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();
-        services.AddScoped<IContentItemRepository, ContentItemRepository>();
-        services.AddScoped<ITodoRepository, TodoRepository>();
-        services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+        // Register DbContext as IApplicationDbContext
+        services.AddScoped<IApplicationDbContext>(provider => 
+            provider.GetRequiredService<ApplicationDbContext>());
 
         // Identity Services
-        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+        services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+        var jwtSettings = builder.Configuration
+            .GetSection("Jwt")
+            .Get<JwtSettings>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings!.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings.Audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings.SecretKey)
+                    ),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-        return services;
+        // Database Initialiser
+        services.AddScoped<ApplicationDbContextInitialiser>();
+
     }
 
-    // Apply pending migrations at startup (Development only)
-    public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    // // Apply pending migrations at startup (Development only)
+    // public static async Task ApplyMigrationsAsync(this IServiceProvider serviceProvider)
+    // {
+    //     using var scope = serviceProvider.CreateScope();
+    //     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
-        await context.Database.MigrateAsync();
-    }
+    //     await context.Database.MigrateAsync();
+    // }
 }

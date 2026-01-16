@@ -1,4 +1,4 @@
-using TodoApp.Infrastructure;
+using TodoApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-// Add Infrastructure services (DbContext, Repositories, etc.)
-builder.Services.AddInfrastructureServices(builder.Configuration);
+// Add services (DbContext, etc.)
+builder.AddInfrastructureServices();
+builder.AddApplicationServices();
+builder.AddWebServices();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -15,18 +17,26 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Initialise and seed database
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+    
+    await initialiser.InitialiseAsync();
+    await initialiser.SeedAsync();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
-    
-    // Apply migrations in development
-    await app.Services.ApplyMigrationsAsync();
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

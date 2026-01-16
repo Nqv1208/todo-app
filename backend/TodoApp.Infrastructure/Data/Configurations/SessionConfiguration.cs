@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TodoApp.Domain.Identity.Entities;
+using TodoApp.Domain.Entities;
 
 namespace TodoApp.Infrastructure.Data.Configurations;
 

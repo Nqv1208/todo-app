@@ -1,3 +1,5 @@
+using TodoApp.Application.Common.Interfaces;
+
 namespace TodoApp.Infrastructure.Identity.Services;
 
 // BCrypt Password Hasher Implementation

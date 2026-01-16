@@ -1,15 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using TodoApp.Application.Common.Interfaces;
 using TodoApp.Domain.Common;
-using TodoApp.Domain.Identity.Entities;
-using TodoApp.Domain.Workspace.Entities;
-using TodoApp.Domain.Content.Entities;
-using TodoApp.Domain.Collaboration.Entities;
-using TodoApp.Domain.Activity.Entities;
+using TodoApp.Domain.Entities;
 
 namespace TodoApp.Infrastructure.Data;
 
-// Application Database Context - EF Core DbContext
-public class ApplicationDbContext : DbContext
+// Application Database Context - Implement IApplicationDbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
