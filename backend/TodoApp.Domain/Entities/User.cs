@@ -10,6 +10,9 @@ public class User : AuditableEntity
     public Email Email { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string? Avatar { get; private set; }
+    
+    // Computed property for compatibility
+    public string? AvatarUrl => Avatar;
     public string PasswordHash { get; private set; } = null!;
     public UserStatus Status { get; private set; }
     public DateTime? LastLoginAt { get; private set; }

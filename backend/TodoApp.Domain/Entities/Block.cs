@@ -22,7 +22,7 @@ public class Block : AuditableEntity
 
     private Block() : base() { }
 
-    internal static Block Create(Guid contentItemId, BlockType type, string? content = null, int position = 0)
+    public static Block Create(Guid contentItemId, BlockType type, string? content = null, int position = 0)
     {
         var block = new Block
         {

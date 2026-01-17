@@ -33,6 +33,20 @@ public class Session : BaseEntity
         };
     }
 
+    public static Session Create(Guid userId, string refreshToken, DateTime expiresAt, string? deviceInfo = null, string? ipAddress = null)
+    {
+        return new Session
+        {
+            UserId = userId,
+            RefreshToken = refreshToken,
+            ExpiresAt = expiresAt,
+            CreatedAt = DateTime.UtcNow,
+            IsRevoked = false,
+            DeviceInfo = deviceInfo,
+            IpAddress = ipAddress
+        };
+    }
+
     public bool IsValid => !IsRevoked && ExpiresAt > DateTime.UtcNow;
 
     public void Revoke()

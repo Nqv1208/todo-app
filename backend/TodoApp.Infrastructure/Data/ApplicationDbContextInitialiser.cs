@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TodoApp.Application.Common.Interfaces;
 using TodoApp.Domain.Entities;
 using TodoApp.Domain.Enums;
 using TodoApp.Domain.ValueObjects;
-using TodoApp.Infrastructure.Identity.Services;
 
 namespace TodoApp.Infrastructure.Data;
 
@@ -11,12 +11,12 @@ public class ApplicationDbContextInitialiser
 {
     private readonly ILogger<ApplicationDbContextInitialiser> _logger;
     private readonly ApplicationDbContext _context;
-    private readonly PasswordHasher _passwordHasher;
+    private readonly IPasswordHasher _passwordHasher;
 
     public ApplicationDbContextInitialiser(
         ILogger<ApplicationDbContextInitialiser> logger,
         ApplicationDbContext context,
-        PasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher)
     {
         _logger = logger;
         _context = context;
@@ -68,8 +68,6 @@ public class ApplicationDbContextInitialiser
 
         // 3. Create Content (Pages, Todos)
         await SeedContentAsync(personalWorkspace.Id, teamWorkspace.Id, adminUser.Id);
-
-        await _context.SaveChangesAsync(default);
 
         _logger.LogInformation("Database seeded successfully.");
     }
@@ -136,43 +134,16 @@ public class ApplicationDbContextInitialiser
         );
         gettingStartedPage.UpdateIcon(Icon.FromEmoji("🚀"));
         _context.ContentItems.Add(gettingStartedPage);
-        await _context.SaveChangesAsync(default);
-
-        // Add blocks to Getting Started page
-        var welcomeBlock = gettingStartedPage.AddBlock(BlockType.Heading1, "Welcome to TodoApp!");
-        var introBlock = gettingStartedPage.AddBlock(BlockType.Text, "This is your personal workspace. Here you can create pages, todos, and organize your work.");
-        var tipBlock = gettingStartedPage.AddBlock(BlockType.Callout, "💡 Tip: Use the sidebar to navigate between pages and create new content.");
 
         // 2. My Tasks - Todo list
         var myTasksContent = ContentItem.CreateTodoList("📝 My Tasks", personalWorkspaceId);
         myTasksContent.UpdateIcon(Icon.FromEmoji("📝"));
         _context.ContentItems.Add(myTasksContent);
-        await _context.SaveChangesAsync(default);
-
-        // Create Todo for My Tasks
-        var myTasksTodo = Todo.Create(
-            myTasksContent.Id,
-            TodoPriority.Medium,
-            DateTime.UtcNow.AddDays(7)
-        );
-        _context.Todos.Add(myTasksTodo);
-
-        // Add subtasks
-        myTasksTodo.AddSubTask("Review project requirements");
-        myTasksTodo.AddSubTask("Set up development environment");
-        myTasksTodo.AddSubTask("Create initial wireframes");
 
         // 3. Personal Notes page
         var notesPage = ContentItem.CreatePage("📓 Personal Notes", personalWorkspaceId);
         notesPage.UpdateIcon(Icon.FromEmoji("📓"));
         _context.ContentItems.Add(notesPage);
-        await _context.SaveChangesAsync(default);
-
-        notesPage.AddBlock(BlockType.Heading2, "Meeting Notes");
-        notesPage.AddBlock(BlockType.Text, "Add your meeting notes here...");
-        notesPage.AddBlock(BlockType.Divider);
-        notesPage.AddBlock(BlockType.Heading2, "Ideas");
-        notesPage.AddBlock(BlockType.BulletList, "New feature ideas");
 
         // === TEAM WORKSPACE ===
 
@@ -180,24 +151,86 @@ public class ApplicationDbContextInitialiser
         var roadmapPage = ContentItem.CreatePage("🗺️ Project Roadmap", teamWorkspaceId);
         roadmapPage.UpdateIcon(Icon.FromEmoji("🗺️"));
         _context.ContentItems.Add(roadmapPage);
-        await _context.SaveChangesAsync(default);
-
-        roadmapPage.AddBlock(BlockType.Heading1, "Q1 2026 Roadmap");
-        roadmapPage.AddBlock(BlockType.Text, "Our goals and milestones for Q1 2026.");
-        roadmapPage.AddBlock(BlockType.Heading2, "January");
-        roadmapPage.AddBlock(BlockType.Checkbox, "Complete authentication system");
-        roadmapPage.AddBlock(BlockType.Checkbox, "Implement workspace management");
-        roadmapPage.AddBlock(BlockType.Heading2, "February");
-        roadmapPage.AddBlock(BlockType.Checkbox, "Build content editor");
-        roadmapPage.AddBlock(BlockType.Checkbox, "Add collaboration features");
 
         // 2. Sprint Tasks
         var sprintTasks = ContentItem.CreateTodoList("🏃 Sprint Tasks", teamWorkspaceId);
         sprintTasks.UpdateIcon(Icon.FromEmoji("🏃"));
         _context.ContentItems.Add(sprintTasks);
+
+        // 3. Team Wiki
+        var wikiPage = ContentItem.CreatePage("📚 Team Wiki", teamWorkspaceId);
+        wikiPage.UpdateIcon(Icon.FromEmoji("📚"));
+        _context.ContentItems.Add(wikiPage);
+
+        // Save all content items first
         await _context.SaveChangesAsync(default);
 
-        // High priority todo
+        // 4. Nested page - sub-page under Wiki
+        var apiDocsPage = ContentItem.CreatePage("🔌 API Documentation", teamWorkspaceId, wikiPage.Id);
+        apiDocsPage.UpdateIcon(Icon.FromEmoji("🔌"));
+        _context.ContentItems.Add(apiDocsPage);
+        await _context.SaveChangesAsync(default);
+
+        // === ADD BLOCKS ===
+        // Add blocks directly to context
+
+        // Blocks for Getting Started page
+        _context.Blocks.AddRange(
+            Block.Create(gettingStartedPage.Id, BlockType.Heading1, "Welcome to TodoApp!", 0),
+            Block.Create(gettingStartedPage.Id, BlockType.Text, "This is your personal workspace. Here you can create pages, todos, and organize your work.", 1),
+            Block.Create(gettingStartedPage.Id, BlockType.Callout, "💡 Tip: Use the sidebar to navigate between pages and create new content.", 2)
+        );
+
+        // Blocks for Notes page
+        _context.Blocks.AddRange(
+            Block.Create(notesPage.Id, BlockType.Heading2, "Meeting Notes", 0),
+            Block.Create(notesPage.Id, BlockType.Text, "Add your meeting notes here...", 1),
+            Block.Create(notesPage.Id, BlockType.Divider, null, 2),
+            Block.Create(notesPage.Id, BlockType.Heading2, "Ideas", 3),
+            Block.Create(notesPage.Id, BlockType.BulletList, "New feature ideas", 4)
+        );
+
+        // Blocks for Roadmap page
+        _context.Blocks.AddRange(
+            Block.Create(roadmapPage.Id, BlockType.Heading1, "Q1 2026 Roadmap", 0),
+            Block.Create(roadmapPage.Id, BlockType.Text, "Our goals and milestones for Q1 2026.", 1),
+            Block.Create(roadmapPage.Id, BlockType.Heading2, "January", 2),
+            Block.Create(roadmapPage.Id, BlockType.Checkbox, "Complete authentication system", 3),
+            Block.Create(roadmapPage.Id, BlockType.Checkbox, "Implement workspace management", 4),
+            Block.Create(roadmapPage.Id, BlockType.Heading2, "February", 5),
+            Block.Create(roadmapPage.Id, BlockType.Checkbox, "Build content editor", 6),
+            Block.Create(roadmapPage.Id, BlockType.Checkbox, "Add collaboration features", 7)
+        );
+
+        // Blocks for Wiki page
+        _context.Blocks.AddRange(
+            Block.Create(wikiPage.Id, BlockType.Heading1, "Team Documentation", 0),
+            Block.Create(wikiPage.Id, BlockType.Text, "Welcome to our team wiki! Find all important documentation here.", 1),
+            Block.Create(wikiPage.Id, BlockType.Divider, null, 2),
+            Block.Create(wikiPage.Id, BlockType.Heading2, "Quick Links", 3),
+            Block.Create(wikiPage.Id, BlockType.BulletList, "API Documentation", 4),
+            Block.Create(wikiPage.Id, BlockType.BulletList, "Design System", 5),
+            Block.Create(wikiPage.Id, BlockType.BulletList, "Deployment Guide", 6)
+        );
+
+        // Blocks for API Docs page
+        _context.Blocks.AddRange(
+            Block.Create(apiDocsPage.Id, BlockType.Heading1, "API Reference", 0),
+            Block.Create(apiDocsPage.Id, BlockType.Text, "Complete API documentation for TodoApp.", 1),
+            Block.Create(apiDocsPage.Id, BlockType.Code, "GET /api/v1/workspaces\nGET /api/v1/content-items\nPOST /api/v1/todos", 2)
+        );
+
+        // === ADD TODOS ===
+
+        // Todo for My Tasks
+        var myTasksTodo = Todo.Create(
+            myTasksContent.Id,
+            TodoPriority.Medium,
+            DateTime.UtcNow.AddDays(7)
+        );
+        _context.Todos.Add(myTasksTodo);
+
+        // Todo for Sprint Tasks
         var highPriorityTodo = Todo.Create(
             sprintTasks.Id,
             TodoPriority.High,
@@ -205,33 +238,9 @@ public class ApplicationDbContextInitialiser
         );
         highPriorityTodo.AssignTo(userId);
         _context.Todos.Add(highPriorityTodo);
-        highPriorityTodo.AddSubTask("Fix critical bug in auth flow");
-        highPriorityTodo.AddSubTask("Write unit tests");
-        highPriorityTodo.AddSubTask("Deploy to staging");
 
-        // 3. Team Wiki
-        var wikiPage = ContentItem.CreatePage("📚 Team Wiki", teamWorkspaceId);
-        wikiPage.UpdateIcon(Icon.FromEmoji("📚"));
-        _context.ContentItems.Add(wikiPage);
+        // Save all blocks and todos
         await _context.SaveChangesAsync(default);
-
-        wikiPage.AddBlock(BlockType.Heading1, "Team Documentation");
-        wikiPage.AddBlock(BlockType.Text, "Welcome to our team wiki! Find all important documentation here.");
-        wikiPage.AddBlock(BlockType.Divider);
-        wikiPage.AddBlock(BlockType.Heading2, "Quick Links");
-        wikiPage.AddBlock(BlockType.BulletList, "API Documentation");
-        wikiPage.AddBlock(BlockType.BulletList, "Design System");
-        wikiPage.AddBlock(BlockType.BulletList, "Deployment Guide");
-
-        // 4. Nested page example - sub-page under Wiki
-        var apiDocsPage = ContentItem.CreatePage("🔌 API Documentation", teamWorkspaceId, wikiPage.Id);
-        apiDocsPage.UpdateIcon(Icon.FromEmoji("🔌"));
-        _context.ContentItems.Add(apiDocsPage);
-        await _context.SaveChangesAsync(default);
-
-        apiDocsPage.AddBlock(BlockType.Heading1, "API Reference");
-        apiDocsPage.AddBlock(BlockType.Text, "Complete API documentation for TodoApp.");
-        apiDocsPage.AddBlock(BlockType.Code, "GET /api/v1/workspaces\nGET /api/v1/content-items\nPOST /api/v1/todos");
 
         _logger.LogInformation("Seeded content: Pages, Todos, Blocks");
     }

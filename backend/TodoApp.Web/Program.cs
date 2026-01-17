@@ -1,17 +1,15 @@
 using TodoApp.Infrastructure.Data;
+using TodoApp.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-builder.Services.AddOpenApi();
+// Add services
 builder.Services.AddControllers();
-
-// Add services (DbContext, etc.)
 builder.AddInfrastructureServices();
 builder.AddApplicationServices();
 builder.AddWebServices();
 
-// Swagger
+// Swagger với JWT support
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -27,10 +25,11 @@ if (app.Environment.IsDevelopment())
     await initialiser.SeedAsync();
 }
 
-// Configure the HTTP request pipeline.
+// Middleware pipeline
+app.UseExceptionHandling();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
