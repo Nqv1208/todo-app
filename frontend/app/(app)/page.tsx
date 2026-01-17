@@ -1,26 +1,29 @@
-"use client"
+import {
+  DecorativeBackground,
+  Header,
+  HeroSection,
+  FeaturesSection,
+  DemoSection,
+  TestimonialsSection,
+  CTASection,
+  Footer,
+} from "@/components/app"
 
-import * as React from "react"
-import { useTheme } from "next-themes"
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function Page() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
+export default function HomePage() {
   return (
-    <Button
-      onClick={() =>
-        setTheme(theme === "dark" ? "light" : "dark")
-      }
-    >
-      Toggle theme
-    </Button>
+    <div className="min-h-screen bg-background">
+      <DecorativeBackground />
+      <Header />
+
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <DemoSection />
+        <TestimonialsSection />
+        <CTASection />
+      </main>
+
+      <Footer />
+    </div>
   )
 }

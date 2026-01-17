@@ -1,6 +1,14 @@
-// app/layout.tsx
 import "@/styles/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Outfit } from "next/font/google"
+
+const outfit = Outfit({
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-outfit",
+  display: "swap",
+})
+
 
 export default function RootLayout({
   children,
@@ -8,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    <html lang="vi" suppressHydrationWarning className={outfit.variable}>
+      <body className={outfit.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
