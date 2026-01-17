@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd frontend && bun run build",
+  "devCommand": "cd frontend && bun run dev",
+  "installCommand": "cd frontend && bun install"
+}
